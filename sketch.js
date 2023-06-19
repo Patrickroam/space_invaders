@@ -6,9 +6,8 @@ function draw() {
     background(imagemFundo);
     mostraPlayer();
     movimentaPlayer();
-    criaEnemies();
+    CriarEnemiesaAposTresSeg();
     mostraEnemies();
     mostraBullet();
-    shootBullet();
-    //movimentoDosEnemies();
+    movimentaEnemies();
 }

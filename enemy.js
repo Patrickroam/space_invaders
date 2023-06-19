@@ -1,61 +1,62 @@
-const NUM_ENEMIES = 39;
-const ENEMY_WIDTH = 40;
-const ENEMY_HEIGHT = 40;
-const ENEMY_START_X = 20;
-const ENEMY_START_Y = [0, 50, 100];
-const ENEMIES_ROW = 13;
-const ENEMY_SPACING_X = 60;
-const ENEMY_SPEED = 1;
+let arrayEnemies = [];
 
-let enemyPositionsX = [];
-let enemyPositionsY = [];
-
-function criaEnemies() {
-    if (enemyPositionsX.length < NUM_ENEMIES) {
-        adicionaEnemies();
-    }
+function CriarEnemiesaAposTresSeg() {
+    setInterval(criaEnemies, 1000);
 }
 
-function adicionaEnemies() {
-    let posX = ENEMY_START_X;
-    let posY = ENEMY_START_Y[0];
+function criaEnemies() {
+    let tamanhoDaTela = 800;
+    let posicaoInicalX = 20;
+    let posicaoInicalY = 0;
+    let numLinhas = 2;
+    let numColunas = parseInt(Math.random() * (17 - 7) + 7);
+    let espaco = tamanhoDaTela / numColunas;
+    let enemyWidth = espaco / 2;
+    let enemyHeigth = espaco / 2;
+    let quantidadeEnemies = arrayEnemies.length;
 
-    while (enemyPositionsX.length < NUM_ENEMIES) {
-        for (let y = 0; y < ENEMY_START_Y.length; y++) {
-            posX = ENEMY_START_X;
-            posY = ENEMY_START_Y[y];
+    if (quantidadeEnemies < 12) {
+        console.log("quantidade de inimigos: " + quantidadeEnemies)
+        console.log("numColunas: " + numColunas)
+        console.log(espaco);
 
-            for (let j = 0; j < ENEMIES_ROW; j++) {
-                enemyPositionsX.push(posX);
-                enemyPositionsY.push(posY);
-                posX += ENEMY_SPACING_X;
+        for (let linha = 0; linha < numLinhas; linha++) {
+            for (let col = 0; col < numColunas; col++) {
+                let enemy = {
+                    positionX: posicaoInicalX + col * espaco,
+                    positionY: posicaoInicalY + linha * espaco,
+                    width: enemyWidth,
+                    heigth: enemyHeigth,
+                }
+
+                arrayEnemies.push(enemy);
             }
         }
     }
-
-    console.log(enemyPositionsX);
 }
 
-function mostraEnemies() {
-    for (let i = 0; i < enemyPositionsX.length; i++) {
-        image(imagemEnemy, enemyPositionsX[i], enemyPositionsY[i], ENEMY_WIDTH, ENEMY_HEIGHT);
+async function mostraEnemies() {
+    for (let i = 0; i < arrayEnemies.length; i++) {
+        image(imagemEnemy,
+            arrayEnemies[i].positionX,
+            arrayEnemies[i].positionY,
+            arrayEnemies[i].width,
+            arrayEnemies[i].heigth)
     }
 }
 
-function movimentoDosEnemies() {
-    let posicao;
-    for (let i = 0; i < enemyPositionsX.length; i++) {
-        enemyPositionsY[i] += ENEMY_SPEED;
+function movimentaEnemies() {
+    for (let i = 0; i < arrayEnemies.length; i++) {
+        mudaPosicaoYdosEnemies(i);
 
-        if (chegouNaBase()) {
-            enemyPositionsY[i] = 0;
+        if (arrayEnemies[i].positionY > posicaoPlayer[1]) {
+            break;
         }
-        return posicao = enemyPositionsY[i];
+
     }
 }
 
-function chegouNaBase(posicao) {
-    posicao > 350;
-
-    console.log(posicao);
+function mudaPosicaoYdosEnemies(i) {
+    arrayEnemies[i].positionY += 0.3;
 }
+

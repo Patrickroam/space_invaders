@@ -1,29 +1,39 @@
-
-
 let arrayBullets = [];
+let shooting = false;
+
 
 function mostraBullet() {
+
     for (let i = 0; i < arrayBullets.length; i++) {
-        image(imagemBullet, arrayBullets[i].position[0],
+        image(imagemBullet,
+            arrayBullets[i].position[0],
             arrayBullets[i].position[1],
             arrayBullets[i].width,
             arrayBullets[i].heigth);
     }
 }
 
+function keyPressed() {
+    if (keyCode === 32 && !shooting) {
+        shooting = true;
+        shootBullet();
+        shooting = false;
+    }
+}
+
 
 async function shootBullet() {
-    if (keyIsDown(32)) {
 
-        let bullet = await criaBullet();
+    let bullet = await criaBullet();
 
-        while (!bullet.colidiu && !bullet.topo) {
-            await moveBullet(bullet);
-            await verificaColisao(bullet);
-            await verificaSeChegouNoTopo(bullet);
-            await sleep(20);
-        }
+    while (!bullet.colidiu && !bullet.topo) {
+
+        await moveBullet(bullet);
+        await verificaColisao(bullet);
+        await verificaSeChegouNoTopo(bullet);
+        await sleep(1);
     }
+
 }
 
 async function criaBullet() {
@@ -33,11 +43,10 @@ async function criaBullet() {
         heigth: 20,
         colidiu: false,
         topo: false,
-
+        positionArray: arrayBullets.length
     };
 
     arrayBullets.push(bullet);
-
     return bullet;
 }
 
@@ -46,27 +55,42 @@ function sleep(ms) {
 }
 
 async function moveBullet(bullet) {
-    bullet.position[1] -= 4;
+    bullet.position[1] -= 1;
 }
 
 async function verificaSeChegouNoTopo(bullet) {
     if (bullet.position[1] <= 0) {
         bullet.topo = true;
+        excluiBulletNoTopo(bullet);
     }
 }
 
 
 async function verificaColisao(bullet) {
-    for (let i = 0; i < 595; i++) {
 
-        let collide = collideRectCircle(enemyPositionsX[6],
-            enemyPositionsY[33], ENEMY_WIDTH, ENEMY_HEIGHT,
-            bullet.position[0], bullet.position[1], 1);
+    for (let i = 0; i < arrayEnemies.length; i++) {
+
+        let collide = collideRectCircle(arrayEnemies[i].positionX,
+            arrayEnemies[i].positionY,
+            arrayEnemies[i].width,
+            arrayEnemies[i].heigth,
+            bullet.position[0],
+            bullet.position[1], 15);
 
         if (collide) {
             bullet.colidiu = true;
-            break;
+            explodEnemies(i);
+            arrayBullets.splice(bullet.arrayBullets, 1);
         }
     }
 }
 
+function explodEnemies(i) {
+    arrayEnemies.splice(i, 1);
+
+}
+
+function excluiBulletNoTopo(bullet) {
+    arrayBullets.splice(bullet.arrayBullets, 1);
+
+}
